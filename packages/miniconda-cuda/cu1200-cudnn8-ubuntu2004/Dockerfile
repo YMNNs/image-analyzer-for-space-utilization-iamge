@@ -34,7 +34,7 @@ RUN sed -i '/^prefix:/d' environment.yml && conda env create -f environment.yml 
 EXPOSE 5000
 
 # 挂载数据卷
-VOLUME ["/input_data", "/output_data"]
+VOLUME ["/data/input", "/data/output"]
 
 # 检查健康状况
 HEALTHCHECK --interval=10s --timeout=3s \
