@@ -21,6 +21,9 @@ RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pk
 # 创建环境
 RUN sed -i '/^prefix:/d' environment.yml && conda env create -f environment.yml -n app_env
 
+# 执行用户自定义的脚本
+RUN if [ -e ./setup.sh ]; then ./setup.sh; fi
+
 # 暴露端口
 EXPOSE 5000
 
