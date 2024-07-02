@@ -2,6 +2,7 @@ FROM nvidia/cuda:12.0.0-cudnn8-runtime-ubuntu20.04
 LABEL authors="csu"
 
 ARG ZIP_NAME=app.zip
+ENV PYTHONUNBUFFERED=1
 
 WORKDIR /opt
 
@@ -44,5 +45,5 @@ HEALTHCHECK --interval=10s --timeout=3s \
     CMD curl -fs http://localhost:5000/date || exit 1
 
 # 创建入口
-CMD ["conda", "run", "-n", "app_env", "python", "app.py"]
+CMD ["conda", "run", "--no-capture-output", "-n", "app_env", "python", "app.py"]
 
