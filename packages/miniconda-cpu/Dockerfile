@@ -31,9 +31,5 @@ EXPOSE 5000
 # 挂载数据卷
 VOLUME ["/log", "/data/input", "/data/output"]
 
-# 检查健康状况
-HEALTHCHECK --interval=10s --timeout=3s \
-    CMD curl -fs http://localhost:5000/date || exit 1
-
 # 创建入口
 CMD ["conda", "run", "--no-capture-output", "-n", "app_env", "python", "app.py"]
