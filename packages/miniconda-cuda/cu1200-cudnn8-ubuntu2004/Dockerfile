@@ -3,6 +3,7 @@ LABEL authors="csu"
 
 ARG ZIP_NAME=app.zip
 ENV PYTHONUNBUFFERED=1
+ENV DEBIAN_FRONTEND=noninteractive
 
 WORKDIR /opt
 
