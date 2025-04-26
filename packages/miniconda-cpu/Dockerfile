@@ -7,24 +7,21 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 WORKDIR /app
 
-# 安装工具
-RUN apt update && apt install curl unzip -y
-
-# 复制并解压文件
 COPY $ZIP_NAME .
-RUN unzip $ZIP_NAME -d . && rm -f $ZIP_NAME
 
-# 添加镜像源
-RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main \
-    && conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r \
-    && conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/msys2 \
-    && conda update -y conda
-
-# 创建环境
-RUN sed -i '/^prefix:/d' environment.yml && conda env create -f environment.yml -n app_env
-
-# 执行用户自定义的脚本
-RUN if [ -e ./setup.sh ]; then chmod +x setup.sh && ./setup.sh; fi
+# 用 && 连接多条命令可以减小镜像体积
+# 安装工具，解压文件，创建环境，执行安装脚本，清理缓存
+RUN apt update \
+    && apt install curl unzip -y \
+    && unzip $ZIP_NAME -d .\
+    && rm -rf $ZIP_NAME \
+    && sed -i '/^prefix:/d' environment.yml  \
+    && conda env create -f environment.yml -n app_env \
+    && if [ -e ./setup.sh ]; then chmod +x setup.sh && ./setup.sh; fi \
+    && apt clean \
+    && apt autoclean \
+    && conda clean --all -y \
+    && conda run -n app_env pip cache purge
 
 # 暴露端口
 EXPOSE 5000
